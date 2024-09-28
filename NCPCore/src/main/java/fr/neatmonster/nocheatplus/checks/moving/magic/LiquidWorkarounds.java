@@ -80,51 +80,7 @@ public class LiquidWorkarounds {
                 }
             }
 
-            if (lastMove.toIsValid) {
 
-                // Launched in liquid by a bubble column with space bar kept pressed.
-                // (This is called after having used up all velocity and this move does not fit in the friction envelope)
-                if (data.insideBubbleStreamCount > 0 && yDistance > 0.0 && lastMove.yDistance > 0.0
-                    && !data.isVelocityJumpPhase() && yDistance < lastMove.yDistance * data.lastFrictionVertical
-                    && yDistance < Magic.bubbleStreamAscend) {
-                    return yDistance;
-                }
-
-                // Lenient on marginal violation if speed decreases by 'enough'.
-                // (Observed on 'dirty' phase. Then why not confining by isVelocityJumpPhase?)
-                if (Math.abs(frictDist - yDistance) <= 2.0 * Magic.GRAVITY_MAX
-                    && yDistance < lastMove.yDistance - 4.0 * Math.abs(frictDist - yDistance)
-                    && data.isVelocityJumpPhase()) {
-                    return yDistance;
-                }
-
-                // Jumping with velocity into water from below, just slightly more decrease than gravity, twice.
-                // (Should be able to do without aw-ww-ww confinement.)
-                // (dirty seems to be set/kept reliably)
-                if (yDistance > frictDist && yDistance < lastMove.yDistance - Magic.GRAVITY_MAX && data.insideMediumCount <= 1) {
-                    return yDistance;
-                }
-                
-                // Cases considering two past moves with moving up.
-                if (pastMove1.toIsValid && pastMove1.to.extraPropertiesValid) {
-
-                    // Splash move with space space pressed (this move leaving liquid).
-                    if (pastMove1.yDistance > 0.0 && thisMove.yDistance > 0.0
-                        && pastMove1.yDistance - Magic.GRAVITY_MAX > lastMove.yDistance 
-                        && lastMove.yDistance - Magic.GRAVITY_ODD > thisMove.yDistance
-                        && Magic.intoLiquid(lastMove) && Magic.leavingLiquid(thisMove)) {
-                        return yDistance;
-                    }
-
-                    // Velocity use in lastMove, keep air friction roughly.
-                    // (Then confine it by lastMove.verVelUsed != null?)
-                    if (!Magic.resetCond(pastMove1) && lastMove.yDistance - Magic.GRAVITY_MAX > thisMove.yDistance
-                        && Magic.intoLiquid(lastMove) && Magic.leavingLiquid(thisMove) && lastMove.verVelUsed != null) {
-                        return yDistance;
-                    }
-                }
-            }
-        }
         // Otherwise, only if last move is available.
         else if (lastMove.toIsValid) {
             

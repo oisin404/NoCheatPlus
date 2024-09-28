@@ -133,20 +133,6 @@ public class MovingUtil {
      * @param to
      * @param data
      */
-    public static boolean isCollideWithHB(PlayerLocation from, PlayerLocation to, MovingData data) {
-
-        final boolean isFlagCollected = (to.getBlockFlags() & BlockFlags.F_STICKY) != 0;
-        // Moving on side block, remove nofall data
-        if (isFlagCollected && !to.isOnGround() && BlockProperties.collides(to.getBlockCache(),
-                                                         to.getMinX() - 0.01, to.getMinY(), to.getMinZ() - 0.01, 
-                                                         to.getMaxX() + 0.01, to.getMaxY(), to.getMaxZ() + 0.01, 
-                                                         BlockFlags.F_STICKY)
-        ) {
-            data.clearNoFallData();
-        }
-        return isFlagCollected;
-    }
-
 
     /**
      * Consistency / cheat check. Prerequisite is
@@ -429,21 +415,6 @@ public class MovingUtil {
      * @param data
      * @return
      */
-    public static double getRealisticFallDistance(final Player player, final double fromY, final double toY, 
-                                                  final MovingData data, final IPlayerData pData) {
-
-        if (pData.isCheckActive(CheckType.MOVING_NOFALL, player)) {
-            // (NoFall will not be checked, if this method is called.)
-            if (data.noFallMaxY >= fromY ) {
-                return Math.max(0.0, data.noFallMaxY - toY);
-            } else {
-                return Math.max(0.0, fromY - toY); // Skip to avoid exploits: + player.getFallDistance()
-            }
-        } else {
-            // TODO: This would ignore the first split move, if this is the second one.
-            return (double) player.getFallDistance() + Math.max(0.0, fromY - toY);
-        }
-    }
 
 
     /**

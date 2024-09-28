@@ -96,21 +96,7 @@ public class FrictionAxisVelocity {
      * <br>(This does not catch invalidation by speed / direction changing.)
      * @param tick All velocity added before this tick gets removed.
      */
-    public void removeInvalid(final int tick) {
-        // Note: Adding unused entries to a collection should later be supported.
-        // TODO: Also merge entries here, or just on adding?
-        Iterator<AccountEntry> it;
-        // Active.
-        it = active.iterator();
-        while (it.hasNext()) {
-            final AccountEntry vel = it.next();
-            // TODO: 0.001 can be stretched somewhere else, most likely...
-            // TODO: Somehow use tick here too (actCount, valCount)?
-            if (vel.valCount <= 0 || Math.abs(vel.value) <= minValue) {
-                //              System.out.prsintln("Invalidate active: " + vel);
-                it.remove();
-            }
-        }
+
         // Queued.
         it = queued.iterator();
         while (it.hasNext()) {
@@ -197,9 +183,6 @@ public class FrictionAxisVelocity {
      * Debugging.
      * @param builder
      */
-    public void addActive(StringBuilder builder) {
-        addVeloctiy(builder, active);
-    }
 
     /**
      * Debugging.

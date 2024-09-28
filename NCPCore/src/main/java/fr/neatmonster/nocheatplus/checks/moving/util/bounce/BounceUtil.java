@@ -114,34 +114,6 @@ public class BounceUtil {
      * @param data
      * @return True, if bounce has been used, i.e. to do without fall damage.
      */
-    public static boolean onPreparedBounceSupport(final Player player, final Location from, final Location to, 
-                                                  final PlayerMoveData thisMove, final PlayerMoveData lastMove, 
-                                                  final int tick, final MovingData data) {
-
-        if (to.getY() > from.getY() || to.getY() == from.getY() && data.verticalBounce.value < 0.13) {
-            // Apply bounce.
-            if (to.getY() == from.getY()) {
-
-                // TODO: Why is this needed?
-                // Fake use velocity here.
-                //data.prependVerticalVelocity(new SimpleEntry(tick, 0.0, 1));
-                //data.getOrUseVerticalVelocity(0.0);
-
-                if (lastMove.toIsValid && lastMove.yDistance < 0.0) {
-                    // Renew the bounce effect.
-                    data.verticalBounce = new SimpleEntry(tick, data.verticalBounce.value, 1);
-                }
-            }
-            else data.useVerticalBounce(player);
-            return true;
-            // TODO: Find % of verticalBounce.value or abs. value for X: yDistance > 0, deviation from effect < X -> set sfNoLowJump
-        }
-        else {
-            data.verticalBounce = null;
-            return false;
-        }
-    }
-
 
     /**
      * Only for yDistance < 0 + some bounce envelope checked.
@@ -155,36 +127,7 @@ public class BounceUtil {
      * @param cc
      * @return
      */
-    public static BounceType checkPastStateBounceDescend(final Player player, final PlayerLocation from, final PlayerLocation to,
-                                                         final PlayerMoveData thisMove, final PlayerMoveData lastMove, final int tick, 
-                                                         final MovingData data, final MovingConfig cc, BlockChangeTracker blockChangeTracker) {
 
-        // TODO: Find more preconditions.
-        // TODO: Might later need to override/adapt just the bounce effect set by the ordinary method.
-        final UUID worldId = from.getWorld().getUID();
-        // Prepare (normal/extra) bounce.
-        // Typical: a slime block has been there.
-        final BlockChangeEntry entryBelowAny = blockChangeTracker.getBlockChangeEntryMatchFlags(data.blockChangeRef, tick, worldId, to.getBlockX(), to.getBlockY() - 1, to.getBlockZ(), null, BlockFlags.F_BOUNCE25);
-        if (entryBelowAny != null) {
-            // TODO: Check preconditions for bouncing here at all (!).
-            // Check if the/a block below the feet of the player got pushed into the feet of the player.
-            final BlockChangeEntry entryBelowY_POS = entryBelowAny.direction == Direction.Y_POS ? entryBelowAny 
-                                                    : blockChangeTracker.getBlockChangeEntryMatchFlags(data.blockChangeRef, tick, worldId, to.getBlockX(), to.getBlockY() - 1, to.getBlockZ(), Direction.Y_POS, BlockFlags.F_BOUNCE25);
-            if (entryBelowY_POS != null) {
-                // TODO: Can't know if used... data.blockChangeRef.updateSpan(entryBelowY_POS);
-                // TODO: So far, doesn't seem to be followed by violations.
-                return BounceType.STATIC_PAST_AND_PUSH;
-            }
-            // TODO: Can't know if used... data.blockChangeRef.updateSpan(entryBelowAny);
-            else return BounceType.STATIC_PAST;
-        }
-        /*
-         * TODO: Can't update span here. If at all, it can be added as side
-         * condition for using the bounce effect. Probably not worth it.
-         */
-        return BounceType.NO_BOUNCE; // Nothing found, return no bounce.
-    }
-    
 
     /**
      * Only for yDistance > 0 + some bounce envelope checked.

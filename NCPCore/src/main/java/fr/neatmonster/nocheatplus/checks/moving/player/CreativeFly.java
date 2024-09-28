@@ -146,33 +146,6 @@ public class CreativeFly extends Check {
         double[] rese = hackElytraH(player, from, to, hDistance, yDistance, thisMove, lastMove, lostGround, data, cc, debug); // Related to the elytra
         resultH = Math.max(resultH, rese[1]);
 
-        // Check velocity.
-        if (resultH > 0) {
-            double hFreedom = data.getHorizontalFreedom();
-            if (hFreedom < resultH) {
-                // Use queued velocity if possible.
-                hFreedom += data.useHorizontalVelocity(resultH - hFreedom);
-            }
-            if (hFreedom > 0.0) {
-                resultH = Math.max(0.0, resultH - hFreedom);
-                if (resultH <= 0.0) {
-                    limitH = hDistance;
-                }
-                tags.add("hvel");
-            }
-        }
-        else {
-            data.clearActiveHorVel(); // TODO: test/check !
-        }
-
-        resultH *= 100.0; // Normalize to % of a block.
-        if (resultH > 0.0) {
-            tags.add("hdist");
-        }
-
-
-
-
 
 
         //////////////////////////
